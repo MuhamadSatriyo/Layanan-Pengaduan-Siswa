@@ -139,24 +139,24 @@
                                 <span class="badge bg-info">{{ $pengaduan->status }}</span>
                             </p>
                             
-                            @if($pengaduan->lampiran->count())
-                                <p><strong>Lampiran:</strong> 
-                                    @foreach($pengaduan->lampiran as $l)
-                                        <a href="{{ asset($l->file) }}" target="_blank">Lihat File</a>
-                                    @endforeach
-                                </p>
-                            @endif
 
-                            <strong>Tanggapan:</strong>
-                            @forelse($pengaduan->tanggapan as $t)
-                                <div class="alert alert-info p-2 mt-2">
-                                    <strong>{{ $t->user->name ?? 'Petugas' }} (Petugas):</strong>
-                                    <p class="mb-0">{{ $t->isi_tanggapan }}</p>
-                                    <small class="text-muted">{{ $t->created_at->diffForHumans() }}</small>
-                                </div>
-                            @empty
-                                <p class="text-muted">Belum ada tanggapan.</p>
-                            @endforelse
+                             <strong>Tanggapan:</strong>
+                             @forelse($pengaduan->tanggapan as $t)
+                                 <div class="alert alert-info p-2 mt-2">
+                                     <strong>{{ $t->user->name ?? 'Petugas' }} (Petugas):</strong>
+                                     <p class="mb-0">{{ $t->isi_tanggapan }}</p>
+                                     @if(!empty($t->file))
+                                         <div class="mt-2">
+                                             <a href="{{ asset($t->file) }}" target="_blank">
+                                                 <img src="{{ asset($t->file) }}" alt="Foto Tanggapan" style="max-width: 120px; border-radius: 6px;">
+                                             </a>
+                                         </div>
+                                     @endif
+                                     <small class="text-muted">{{ $t->created_at->diffForHumans() }}</small>
+                                 </div>
+                             @empty
+                                 <p class="text-muted">Belum ada tanggapan.</p>
+                             @endforelse
                         </div>
                     @else
                         <p class="text-muted">Masukkan nomor tiket untuk melihat status pengaduan Anda.</p>

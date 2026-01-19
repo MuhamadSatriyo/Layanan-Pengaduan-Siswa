@@ -60,6 +60,5 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->group(function (
 
     Route::post('/pengaduan/{id}/tanggapan', [PengaduanController::class, 'kirimTanggapan'])
         ->name('pengaduan.tanggapan');
+
 });
-
-

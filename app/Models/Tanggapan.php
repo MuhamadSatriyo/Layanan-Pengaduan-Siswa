@@ -16,6 +16,7 @@ class Tanggapan extends Model
         'id_pengaduan',
         'id_user',
         'isi_tanggapan',
+        'file',
     ];
 
     public function pengaduan()

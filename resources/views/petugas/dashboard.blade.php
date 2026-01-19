@@ -45,6 +45,23 @@
 
     <h4 class="mb-3">Daftar Pengaduan Masuk</h4>
 
+    <div class="d-flex justify-content-between align-items-center mb-3 no-print">
+        <form action="{{ route('petugas.dashboard') }}" method="GET" class="d-flex align-items-center">
+            <label class="me-2">Rekap Bulanan</label>
+            <input type="month" name="bulan" class="form-control me-2" value="{{ $bulan ?? '' }}">
+            <label class="me-2">Rekap Status</label>
+            <select name="status" class="form-select me-2" style="max-width: 180px;">
+                <option value="">Semua Status</option>
+                <option value="Menunggu" {{ ($status ?? '') == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
+                <option value="Diproses" {{ ($status ?? '') == 'Diproses' ? 'selected' : '' }}>Diproses</option>
+                <option value="Selesai" {{ ($status ?? '') == 'Selesai' ? 'selected' : '' }}>Selesai</option>
+            </select>
+            <button class="btn btn-secondary me-2">Terapkan</button>
+            <a href="{{ route('petugas.dashboard') }}" class="btn btn-outline-secondary">Reset</a>
+        </form>
+        <button class="btn btn-outline-primary" onclick="window.print()">Print</button>
+    </div>
+
     <!-- ALERT -->
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show">
@@ -73,6 +90,7 @@
                         <th>Pengirim</th>
                         <th>Kategori</th>
                         <th>Status</th>
+                        <th>Tanggal Pengaduan</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -85,7 +103,7 @@
                         <td>{{ $item->judul }}</td>
                         <td>{{ $item->user->name ?? '-' }}</td>
                         <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
-
+                       
                         <td class="text-center">
                             @if($item->status == 'Menunggu')
                                 <span class="badge bg-warning text-dark">Menunggu</span>
@@ -95,6 +113,7 @@
                                 <span class="badge bg-success">Selesai</span>
                             @endif
                         </td>
+                        <td>{{ $item->created_at ? $item->created_at->format('d-m-Y') : '-' }}</td>
 
                         <td>
                             <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal{{ $item->id_pengaduan }}">
@@ -176,9 +195,14 @@
 
                 <hr>
                 <h6>Kirim Tanggapan:</h6>
-                <form action="{{ route('pengaduan.tanggapan', $item->id_pengaduan) }}" method="POST">
+                <form action="{{ route('pengaduan.tanggapan', $item->id_pengaduan) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <textarea name="isi_tanggapan" class="form-control mb-2" placeholder="Tulis tanggapan..." required></textarea>
+                    <div class="mb-2">
+                        <label class="form-label">Aksi Foto (opsional)</label>
+                        <input type="file" name="foto" class="form-control" accept="image/*">
+                        <small class="text-muted">Unggah foto progres (jpg/png, maks 4MB)</small>
+                    </div>
                     <button class="btn btn-primary w-100">Kirim Tanggapan</button>
                 </form>
             </div>
@@ -189,6 +213,13 @@
 
 <!-- BOOTSTRAP JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<style>
+@media print {
+    .no-print, .navbar, .btn, form { display: none !important; }
+    .card, .table { box-shadow: none !important; }
+}
+</style>
 
 </body>
 </html>
